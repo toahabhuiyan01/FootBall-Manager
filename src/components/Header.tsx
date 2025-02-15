@@ -12,7 +12,7 @@ import SportsSoccerIcon from "@mui/icons-material/SportsSoccer";
 
 interface HeaderProps {
     searchQuery: string;
-    onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onSearchChange: (value: string) => void;
 }
 
 export default function Header({ searchQuery, onSearchChange }: HeaderProps) {
@@ -38,7 +38,7 @@ export default function Header({ searchQuery, onSearchChange }: HeaderProps) {
                     size="small"
                     placeholder="Search players..."
                     value={searchQuery}
-                    onChange={onSearchChange}
+                    onChange={(e) => onSearchChange(e.target.value)}
                     sx={{
                         flexGrow: 1,
                         mr: 2,

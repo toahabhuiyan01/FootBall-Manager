@@ -32,13 +32,13 @@ function App() {
         searchPlayers(query);
     }, 500);
 
-    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const query = event.target.value;
+    const handleSearchChange = (value: string) => {
+        const query = value;
         setSearchQuery(query);
         debouncedSearch(query);
     };
 
-    const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    const handleTabChange = (newValue: number) => {
         setSelectedTab(newValue);
         const positions = [
             "All Players",

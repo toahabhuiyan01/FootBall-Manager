@@ -5,7 +5,7 @@ import { Filters } from "../hooks/usePlayerData";
 interface PlayerFiltersProps {
     selectedTab: number;
     filters: Filters;
-    onTabChange: (event: React.SyntheticEvent, newValue: number) => void;
+    onTabChange: (newValue: number) => void;
     onFilterChange: (filters: Partial<Filters>) => void;
 }
 
@@ -20,7 +20,7 @@ export default function PlayerFilters({
             <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 2 }}>
                 <Tabs
                     value={selectedTab}
-                    onChange={onTabChange}
+                    onChange={(_, newValue) => onTabChange(newValue)}
                     aria-label="player categories"
                     centered
                 >
