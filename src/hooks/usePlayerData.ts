@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import axios from "axios";
+import useAlertStore from "../store/AlertStore";
 
 export interface Player {
     id: number;
@@ -18,6 +19,23 @@ export interface Player {
     number: number;
     position: string;
     photo: string;
+    club: string;
+    marketValue: number;
+}
+
+export interface Filters {
+    category?: string;
+    country?: string;
+    club?: string;
+    marketValue?: {
+        min: number;
+        max: number;
+    };
+    age?: {
+        min: number;
+        max: number;
+    };
+    searchQuery?: string;
 }
 
 interface ApiResponse {
@@ -42,63 +60,98 @@ export const usePlayerData = () => {
     const [players, setPlayers] = useState<Player[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const { setAlert } = useAlertStore();
+    const [filters, setFilters] = useState<Filters>({});
 
-    const fetchPlayers = useCallback(async (playerId?: string) => {
-        try {
-            setLoading(true);
-            setError(null);
-
-            const options = {
-                method: "GET",
-                url: "https://api-football-v1.p.rapidapi.com/v3/players/profiles",
-                headers: {
-                    "x-rapidapi-key": API_KEY,
-                    "x-rapidapi-host": API_HOST,
-                },
-                params: playerId ? { player: playerId } : {},
-            };
-
-            const response = await axios.request<ApiResponse>(options);
-            const newPlayers = response.data.response.map(
-                (item) => item.player
-            );
-
-            setPlayers((prevPlayers) => [...prevPlayers, ...newPlayers]);
-        } catch (err) {
-            setError(
-                err instanceof Error
-                    ? err.message
-                    : "An error occurred while fetching players"
-            );
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    const searchPlayers = useCallback(
-        async (query: string) => {
-            // Implement search logic here
+    const fetchPlayers = useCallback(
+        async (playerId?: string) => {
             try {
                 setLoading(true);
                 setError(null);
-                // You would typically have a different endpoint for search
-                // For now, we'll just filter the existing players
-                const filteredPlayers = players.filter((player) =>
-                    player.name.toLowerCase().includes(query.toLowerCase())
+
+                const options = {
+                    method: "GET",
+                    url: "https://api-football-v1.p.rapidapi.com/v3/players/profiles",
+                    headers: {
+                        "x-rapidapi-key": API_KEY,
+                        "x-rapidapi-host": API_HOST,
+                    },
+                    params: {
+                        player: playerId,
+                        search: filters.searchQuery,
+                        country: filters.country,
+                        team: filters.club,
+                    },
+                };
+
+                const response = await axios.request<ApiResponse>(options);
+                const newPlayers = response.data.response.map(
+                    (item) => item.player
                 );
-                setPlayers(filteredPlayers);
+
+                // Apply client-side filters for market value and age
+                const filteredPlayers = newPlayers.filter((player) => {
+                    if (filters.marketValue) {
+                        if (
+                            player.marketValue < filters.marketValue.min ||
+                            player.marketValue > filters.marketValue.max
+                        ) {
+                            return false;
+                        }
+                    }
+                    if (filters.age) {
+                        if (
+                            player.age < filters.age.min ||
+                            player.age > filters.age.max
+                        ) {
+                            return false;
+                        }
+                    }
+                    return true;
+                });
+
+                setPlayers((prevPlayers) => [
+                    ...prevPlayers,
+                    ...filteredPlayers,
+                ]);
             } catch (err) {
-                setError(
+                const errorMessage =
                     err instanceof Error
                         ? err.message
-                        : "An error occurred while searching players"
-                );
+                        : "An error occurred while fetching players";
+                setError(errorMessage);
+                setAlert(errorMessage, "error", 5000);
             } finally {
                 setLoading(false);
             }
         },
-        [players]
+        [filters]
     );
+
+    const searchPlayers = useCallback(
+        async (query: string) => {
+            setFilters((prev) => ({ ...prev, searchQuery: query }));
+            try {
+                setLoading(true);
+                setError(null);
+                await fetchPlayers();
+            } catch (err) {
+                const errorMessage =
+                    err instanceof Error
+                        ? err.message
+                        : "An error occurred while searching players";
+                setError(errorMessage);
+                setAlert(errorMessage, "error", 5000);
+            } finally {
+                setLoading(false);
+            }
+        },
+        [fetchPlayers]
+    );
+
+    const updateFilters = useCallback((newFilters: Partial<Filters>) => {
+        setFilters((prev) => ({ ...prev, ...newFilters }));
+    }, []);
 
     return {
         players,
@@ -106,5 +159,7 @@ export const usePlayerData = () => {
         error,
         fetchPlayers,
         searchPlayers,
+        updateFilters,
+        filters,
     };
 };

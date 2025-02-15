@@ -12,6 +12,7 @@ import {
     InputAdornment,
     Tab,
     Tabs,
+    Divider,
 } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
@@ -20,14 +21,23 @@ import theme from "./theme";
 import { usePlayerData } from "./hooks/usePlayerData";
 import useDebounceFunction from "./hooks/useDebounce";
 import PlayerGrid from "./components/PlayerGrid";
+import FilterControls from "./components/FilterControls";
 import { Player } from "./hooks/usePlayerData";
+import AlertCentral from "./components/AlertCentral";
+import { Drawer } from "@mui/material";
 
 function App() {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedTab, setSelectedTab] = useState(0);
     const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
-    const { players, loading, error, fetchPlayers, searchPlayers } =
-        usePlayerData();
+    const {
+        players,
+        loading,
+        fetchPlayers,
+        searchPlayers,
+        updateFilters,
+        filters,
+    } = usePlayerData();
 
     useEffect(() => {
         fetchPlayers();
@@ -45,6 +55,17 @@ function App() {
 
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setSelectedTab(newValue);
+        const positions = [
+            "All Players",
+            "Forwards",
+            "Midfielders",
+            "Defenders",
+            "Goalkeepers",
+        ];
+        const category = positions[newValue];
+        updateFilters({
+            category: category === "All Players" ? undefined : category,
+        });
     };
 
     const handlePlayerClick = (player: Player) => {
@@ -78,6 +99,7 @@ function App() {
 
     return (
         <ThemeProvider theme={theme}>
+            <AlertCentral />
             <Box sx={{ flexGrow: 1 }}>
                 <AppBar position="static">
                     <Toolbar>
@@ -134,7 +156,7 @@ function App() {
                         </Button>
                     </Toolbar>
                 </AppBar>
-                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 2 }}>
                     <Tabs
                         value={selectedTab}
                         onChange={handleTabChange}
@@ -148,7 +170,13 @@ function App() {
                         <Tab label="Goalkeepers" />
                     </Tabs>
                 </Box>
-                <Container maxWidth="lg" sx={{ mt: 4 }}>
+                <Container maxWidth="lg" sx={{ mt: 2 }}>
+                    <FilterControls
+                        filters={filters}
+                        onFilterChange={updateFilters}
+                    />
+                    <Divider sx={{ my: 2 }} />
+
                     <PlayerGrid
                         players={filteredPlayers}
                         loading={loading}
@@ -157,6 +185,72 @@ function App() {
                     />
                 </Container>
             </Box>
+            <Drawer
+                anchor="right"
+                open={selectedPlayer !== null}
+                onClose={() => setSelectedPlayer(null)}
+                sx={{
+                    "& .MuiDrawer-paper": {
+                        width: { xs: "100%", sm: 400 },
+                        padding: 3,
+                    },
+                }}
+            >
+                {selectedPlayer && (
+                    <Box>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                mb: 3,
+                            }}
+                        >
+                            <img
+                                src={selectedPlayer.photo}
+                                alt={selectedPlayer.name}
+                                style={{
+                                    width: 200,
+                                    height: 200,
+                                    objectFit: "cover",
+                                    borderRadius: "50%",
+                                }}
+                            />
+                        </Box>
+                        <Typography variant="h5" gutterBottom>
+                            {selectedPlayer.name}
+                        </Typography>
+                        <Typography variant="body1" gutterBottom>
+                            Position: {selectedPlayer.position}
+                        </Typography>
+                        <Typography variant="body1" gutterBottom>
+                            Club: {selectedPlayer.club}
+                        </Typography>
+                        <Typography variant="body1" gutterBottom>
+                            Age: {selectedPlayer.age}
+                        </Typography>
+                        <Typography variant="body1" gutterBottom>
+                            Nationality: {selectedPlayer.nationality}
+                        </Typography>
+                        <Typography variant="body1" gutterBottom>
+                            Height: {selectedPlayer.height}
+                        </Typography>
+                        <Typography variant="body1" gutterBottom>
+                            Weight: {selectedPlayer.weight}
+                        </Typography>
+                        <Typography variant="body1" gutterBottom>
+                            Market Value: €{selectedPlayer.marketValue}M
+                        </Typography>
+                        <Button
+                            variant="outlined"
+                            onClick={() => setSelectedPlayer(null)}
+                            sx={{ mt: 2 }}
+                            fullWidth
+                        >
+                            Close
+                        </Button>
+                    </Box>
+                )}
+            </Drawer>
         </ThemeProvider>
     );
 }

@@ -1,12 +1,13 @@
 import { Card, CardContent, CardMedia, Typography, Box } from "@mui/material";
 import { Player } from "../hooks/usePlayerData";
 
-interface PlayerCardProps {
+export default function PlayerCard({
+    player,
+    onClick,
+}: {
     player: Player;
     onClick: (player: Player) => void;
-}
-
-export default function PlayerCard({ player, onClick }: PlayerCardProps) {
+}) {
     return (
         <Card
             sx={{
@@ -41,6 +42,12 @@ export default function PlayerCard({ player, onClick }: PlayerCardProps) {
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                         Age: {player.age}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                        Club: {player.club}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                        Market Value: {player.marketValue}M€
                     </Typography>
                 </Box>
             </CardContent>
