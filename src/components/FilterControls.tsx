@@ -28,10 +28,7 @@ export default function FilterControls({
         setClubs,
     } = useFilterData(filters.country || "");
 
-    const handleMarketValueChange = (
-        event: Event,
-        newValue: number | number[]
-    ) => {
+    const handleMarketValueChange = (newValue: number | number[]) => {
         if (Array.isArray(newValue)) {
             onFilterChange({
                 marketValue: { min: newValue[0], max: newValue[1] },
@@ -39,7 +36,7 @@ export default function FilterControls({
         }
     };
 
-    const handleAgeChange = (event: Event, newValue: number | number[]) => {
+    const handleAgeChange = (newValue: number | number[]) => {
         if (Array.isArray(newValue)) {
             onFilterChange({
                 age: { min: newValue[0], max: newValue[1] },
@@ -139,7 +136,9 @@ export default function FilterControls({
                         filters.marketValue?.min || 0,
                         filters.marketValue?.max || 200,
                     ]}
-                    onChange={handleMarketValueChange}
+                    onChange={(_, newValue) =>
+                        handleMarketValueChange(newValue)
+                    }
                     valueLabelDisplay="auto"
                     min={0}
                     max={200}
@@ -149,7 +148,7 @@ export default function FilterControls({
                 <Typography gutterBottom>Age</Typography>
                 <Slider
                     value={[filters.age?.min || 16, filters.age?.max || 40]}
-                    onChange={handleAgeChange}
+                    onChange={(_, newValue) => handleAgeChange(newValue)}
                     valueLabelDisplay="auto"
                     min={16}
                     max={40}
