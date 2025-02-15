@@ -1,6 +1,7 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import axios from "axios";
 import useAlertStore from "../store/AlertStore";
+import PlayerCard from "../components/PlayerCard";
 
 export interface Player {
     id: number;
@@ -63,11 +64,33 @@ export const usePlayerData = () => {
     const { setAlert } = useAlertStore();
     const [filters, setFilters] = useState<Filters>({});
 
+    const [pagination, setPagination] = useState({
+        cache: 1,
+        scroll: 1,
+    });
+
+    const playersCache = useRef<Player[]>([]);
+
     const fetchPlayers = useCallback(
         async (playerId?: string) => {
             try {
                 setLoading(true);
                 setError(null);
+
+                if (pagination.scroll + 1 * 20 <= PlayerCard.length) {
+                    const next20 = playersCache.current.slice(
+                        pagination.scroll * 20,
+                        (pagination.scroll + 1) * 20
+                    );
+
+                    setPlayers((prev) => [...prev, ...next20]);
+                    setPagination((prev) => ({
+                        ...prev,
+                        scroll: prev.scroll + 1,
+                    }));
+
+                    return;
+                }
 
                 const options = {
                     method: "GET",
@@ -110,10 +133,23 @@ export const usePlayerData = () => {
                     return true;
                 });
 
-                setPlayers((prevPlayers) => [
-                    ...prevPlayers,
+                const allPlayers = [
+                    ...playersCache.current,
                     ...filteredPlayers,
-                ]);
+                ];
+
+                playersCache.current = [...allPlayers];
+
+                const next20 = allPlayers.slice(
+                    pagination.scroll * 20,
+                    (pagination.scroll + 1) * 20
+                );
+
+                setPlayers((prev) => [...prev, ...next20]);
+                setPagination((prev) => ({
+                    cache: prev.cache + 1,
+                    scroll: prev.scroll + 1,
+                }));
             } catch (err) {
                 const errorMessage =
                     err instanceof Error
