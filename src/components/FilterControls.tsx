@@ -1,5 +1,13 @@
-import { Box, TextField, Slider, Typography } from "@mui/material";
+import {
+    Box,
+    Autocomplete,
+    TextField,
+    Slider,
+    Typography,
+    CircularProgress,
+} from "@mui/material";
 import { Filters } from "../hooks/usePlayerData";
+import { useFilterData } from "../hooks/useFilterData";
 
 interface FilterControlsProps {
     filters: Filters;
@@ -10,6 +18,16 @@ export default function FilterControls({
     filters,
     onFilterChange,
 }: FilterControlsProps) {
+    const {
+        countries,
+        clubs,
+        loadingCountries,
+        loadingClubs,
+        setCountryInput,
+        setClubInput,
+        setClubs,
+    } = useFilterData(filters.country || "");
+
     const handleMarketValueChange = (
         event: Event,
         newValue: number | number[]
@@ -38,17 +56,81 @@ export default function FilterControls({
                 alignItems: "center",
             }}
         >
-            <TextField
+            <Autocomplete
                 size="small"
-                label="Country"
-                value={filters.country || ""}
-                onChange={(e) => onFilterChange({ country: e.target.value })}
+                options={countries}
+                getOptionLabel={(option) => option.name}
+                value={
+                    countries.find(
+                        (country) => country.name === filters.country
+                    ) || null
+                }
+                onChange={(_, newValue) => {
+                    onFilterChange({ country: newValue?.name || "" });
+                    setClubs([]); // Reset clubs when country changes
+                }}
+                onInputChange={(_, newInputValue) => {
+                    setCountryInput(newInputValue);
+                }}
+                loading={loadingCountries}
+                renderInput={(params) => (
+                    <TextField
+                        {...params}
+                        label="Country"
+                        InputProps={{
+                            ...params.InputProps,
+                            endAdornment: (
+                                <>
+                                    {loadingCountries ? (
+                                        <CircularProgress
+                                            color="inherit"
+                                            size={20}
+                                        />
+                                    ) : null}
+                                    {params.InputProps.endAdornment}
+                                </>
+                            ),
+                        }}
+                    />
+                )}
+                sx={{ minWidth: 200 }}
             />
-            <TextField
+            <Autocomplete
                 size="small"
-                label="Club"
-                value={filters.club || ""}
-                onChange={(e) => onFilterChange({ club: e.target.value })}
+                options={clubs}
+                getOptionLabel={(option) => option.team.name}
+                value={
+                    clubs.find((club) => club.team.name === filters.club) ||
+                    null
+                }
+                onChange={(_, newValue) => {
+                    onFilterChange({ club: newValue?.team.name || "" });
+                }}
+                onInputChange={(_, newInputValue) => {
+                    setClubInput(newInputValue);
+                }}
+                loading={loadingClubs}
+                renderInput={(params) => (
+                    <TextField
+                        {...params}
+                        label="Club"
+                        InputProps={{
+                            ...params.InputProps,
+                            endAdornment: (
+                                <>
+                                    {loadingClubs ? (
+                                        <CircularProgress
+                                            color="inherit"
+                                            size={20}
+                                        />
+                                    ) : null}
+                                    {params.InputProps.endAdornment}
+                                </>
+                            ),
+                        }}
+                    />
+                )}
+                sx={{ minWidth: 200 }}
             />
             <Box sx={{ minWidth: 200 }}>
                 <Typography gutterBottom>Market Value (M€)</Typography>
