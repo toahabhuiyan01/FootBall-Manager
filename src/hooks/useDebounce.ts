@@ -18,3 +18,7 @@ export default function useDebounceFunction<
 
     return func;
 }
+
+export function delay(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}

@@ -1,7 +1,8 @@
+// PlayerGrid.tsx
 import { useRef, useCallback } from "react";
-import { Grid2 as Grid, Box, CircularProgress } from "@mui/material";
-import { Player } from "../hooks/usePlayerData";
-import PlayerCard from "./PlayerCard";
+import { Grid, Box, CircularProgress } from "@mui/material";
+import { Player } from "../../hooks/usePlayerData";
+import PlayerCard from "./PLayerCard";
 
 interface PlayerGridProps {
     players: Player[];
@@ -34,33 +35,55 @@ export default function PlayerGrid({
     );
 
     return (
-        <Box sx={{ flexGrow: 1, p: 2 }}>
-            <Grid container spacing={3}>
+        <Box
+            sx={{
+                flexGrow: 1,
+                p: 3,
+                display: "flex",
+                justifyContent: "center",
+            }}
+        >
+            <Grid
+                container
+                spacing={3}
+                sx={{
+                    margin: 0,
+                    width: "100%",
+                    maxWidth: "72.5rem",
+                    justifyContent: "center",
+                }}
+            >
                 {players.map((player, index) => (
                     <Grid
-                        component="div"
-                        sx={{
-                            width: {
-                                xs: 12,
-                                sm: 6,
-                                md: 4,
-                                lg: 3,
-                            },
-                        }}
-                        key={player.id}
+                        item
+                        key={player.id + index}
+                        xs={12}
+                        sm={6}
+                        md={4}
                         ref={
                             index === players.length - 1
                                 ? lastPlayerElementRef
-                                : undefined
+                                : null
                         }
+                        sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                        }}
                     >
                         <PlayerCard player={player} onClick={onPlayerClick} />
                     </Grid>
                 ))}
             </Grid>
             {loading && (
-                <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-                    <CircularProgress />
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        mt: 4,
+                        mb: 4,
+                    }}
+                >
+                    <CircularProgress size={60} thickness={4} />
                 </Box>
             )}
         </Box>

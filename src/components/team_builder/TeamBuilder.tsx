@@ -8,7 +8,7 @@ import {
     Typography,
     Alert,
 } from "@mui/material";
-import { Player } from "../hooks/usePlayerData";
+import { Player } from "../../hooks/usePlayerData";
 import FormationVisualization from "./FormationVisualization";
 
 interface TeamBuilderProps {

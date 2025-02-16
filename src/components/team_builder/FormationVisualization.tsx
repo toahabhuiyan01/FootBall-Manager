@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import { Player } from "../hooks/usePlayerData";
+import { Player } from "../../hooks/usePlayerData";
 
 interface FormationVisualizationProps {
     formation: string;
