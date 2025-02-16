@@ -1,19 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { Country, Team } from "../components/filter/types";
 
-interface Country {
-    name: string;
-    code: string;
-    flag: string;
-}
-
-interface Team {
-    team: {
-        name: string;
-        country: string;
-        logo: string;
-    };
-}
+const API_KEY = "9fd61d75e0msh107e104bc68b2e8p1f9af6jsnea65ae8ea3a4";
+const API_HOST = "api-football-v1.p.rapidapi.com";
 
 export const useFilterData = (selectedCountry: string) => {
     const [countries, setCountries] = useState<Country[]>([]);
@@ -27,16 +17,16 @@ export const useFilterData = (selectedCountry: string) => {
         if (!search) return;
         setLoadingCountries(true);
         try {
-            const response = await axios.request({
-                method: "GET",
-                url: "https://api-football-v1.p.rapidapi.com/v3/countries",
-                params: { search },
-                headers: {
-                    "x-rapidapi-key":
-                        "9fd61d75e0msh107e104bc68b2e8p1f9af6jsnea65ae8ea3a4",
-                    "x-rapidapi-host": "api-football-v1.p.rapidapi.com",
-                },
-            });
+            const response = await axios.get(
+                "https://api-football-v1.p.rapidapi.com/v3/countries",
+                {
+                    params: { search },
+                    headers: {
+                        "x-rapidapi-key": API_KEY,
+                        "x-rapidapi-host": API_HOST,
+                    },
+                }
+            );
             setCountries(response.data.response);
         } catch (error) {
             console.error("Error fetching countries:", error);
@@ -48,19 +38,19 @@ export const useFilterData = (selectedCountry: string) => {
     const fetchClubs = async (search: string) => {
         setLoadingClubs(true);
         try {
-            const response = await axios.request({
-                method: "GET",
-                url: "https://api-football-v1.p.rapidapi.com/v3/teams",
-                params: {
-                    search,
-                    country: selectedCountry,
-                },
-                headers: {
-                    "x-rapidapi-key":
-                        "9fd61d75e0msh107e104bc68b2e8p1f9af6jsnea65ae8ea3a4",
-                    "x-rapidapi-host": "api-football-v1.p.rapidapi.com",
-                },
-            });
+            const response = await axios.get(
+                "https://api-football-v1.p.rapidapi.com/v3/teams",
+                {
+                    params: {
+                        search,
+                        country: selectedCountry,
+                    },
+                    headers: {
+                        "x-rapidapi-key": API_KEY,
+                        "x-rapidapi-host": API_HOST,
+                    },
+                }
+            );
             setClubs(response.data.response);
         } catch (error) {
             console.error("Error fetching clubs:", error);
@@ -71,18 +61,17 @@ export const useFilterData = (selectedCountry: string) => {
 
     useEffect(() => {
         if (countryInput) {
-            const timeoutId = setTimeout(() => {
-                fetchCountries(countryInput);
-            }, 500);
+            const timeoutId = setTimeout(
+                () => fetchCountries(countryInput),
+                500
+            );
             return () => clearTimeout(timeoutId);
         }
     }, [countryInput]);
 
     useEffect(() => {
         if (clubInput) {
-            const timeoutId = setTimeout(() => {
-                fetchClubs(clubInput);
-            }, 500);
+            const timeoutId = setTimeout(() => fetchClubs(clubInput), 500);
             return () => clearTimeout(timeoutId);
         }
     }, [clubInput, selectedCountry]);
@@ -92,9 +81,7 @@ export const useFilterData = (selectedCountry: string) => {
         clubs,
         loadingCountries,
         loadingClubs,
-        countryInput,
         setCountryInput,
-        clubInput,
         setClubInput,
         setClubs,
     };

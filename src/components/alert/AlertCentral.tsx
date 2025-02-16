@@ -1,5 +1,5 @@
 import { Grid2 as Grid } from "@mui/material";
-import useAlertStore from "../store/AlertStore";
+import useAlertStore from "../../store/AlertStore";
 import { Terminal, X } from "lucide-react";
 import { useEffect } from "react";
 import { green, red } from "@mui/material/colors";

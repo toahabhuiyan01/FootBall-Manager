@@ -1,15 +1,15 @@
 import "./App.css";
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { Box } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme";
 import { usePlayerData } from "./hooks/usePlayerData";
-import useDebounceFunction from "./hooks/useDebounce";
 import { Player } from "./hooks/usePlayerData";
-import AlertCentral from "./components/AlertCentral";
-import Header from "./components/Header";
-import PlayerFilters from "./components/PlayerFilters";
-import PlayerContent from "./components/PlayerContent";
+import AlertCentral from "./components/alert/AlertCentral";
+import Header from "./components/header/Header";
+import PlayerContent from "./components/player_list/PlayerContent";
+import FilterControls from "./components/filter/FilterControls";
+import FilterTabs from "./components/filter/FilterTabs";
 
 function App() {
     const [searchQuery, setSearchQuery] = useState("");
@@ -19,36 +19,32 @@ function App() {
         players,
         loading,
         fetchPlayers,
-        searchPlayers,
-        updateFilters,
+        updateFiltersDebounced,
+
+        updateOptionalFilters,
+        updateOptionalFiltersDebounced,
         filters,
     } = usePlayerData();
-
-    useEffect(() => {
-        fetchPlayers();
-    }, [fetchPlayers]);
-
-    const debouncedSearch = useDebounceFunction((query: string) => {
-        searchPlayers(query);
-    }, 500);
 
     const handleSearchChange = (value: string) => {
         const query = value;
         setSearchQuery(query);
-        debouncedSearch(query);
+        updateFiltersDebounced({
+            search: query,
+        });
     };
 
     const handleTabChange = (newValue: number) => {
         setSelectedTab(newValue);
         const positions = [
             "All Players",
-            "Forwards",
-            "Midfielders",
-            "Defenders",
-            "Goalkeepers",
+            "Attacker",
+            "Midfielder",
+            "Defender",
+            "Goalkeeper",
         ];
         const category = positions[newValue];
-        updateFilters({
+        updateOptionalFilters({
             category: category === "All Players" ? undefined : category,
         });
     };
@@ -61,27 +57,6 @@ function App() {
         fetchPlayers();
     };
 
-    const filteredPlayers = useMemo(() => {
-        const positions = [
-            "All Players",
-            "Forwards",
-            "Midfielders",
-            "Defenders",
-            "Goalkeepers",
-        ];
-        if (selectedTab === 0) return players;
-        return players.filter((player) => {
-            const position = player.position.toLowerCase();
-            const category = positions[selectedTab].toLowerCase();
-            if (category === "forwards") return position.includes("attack");
-            if (category === "midfielders")
-                return position.includes("midfield");
-            if (category === "defenders") return position.includes("defend");
-            if (category === "goalkeepers") return position.includes("keeper");
-            return true;
-        });
-    }, [players, selectedTab]);
-
     return (
         <ThemeProvider theme={theme}>
             <AlertCentral />
@@ -90,14 +65,17 @@ function App() {
                     searchQuery={searchQuery}
                     onSearchChange={handleSearchChange}
                 />
-                <PlayerFilters
-                    selectedTab={selectedTab}
+                <FilterControls
                     filters={filters}
+                    onFilterChange={updateOptionalFilters}
+                    onFilterChangeDebounced={updateOptionalFiltersDebounced}
+                />
+                <FilterTabs
                     onTabChange={handleTabChange}
-                    onFilterChange={updateFilters}
+                    selectedTab={selectedTab}
                 />
                 <PlayerContent
-                    players={filteredPlayers}
+                    players={players}
                     loading={loading}
                     selectedPlayer={selectedPlayer}
                     onLoadMore={handleLoadMore}
