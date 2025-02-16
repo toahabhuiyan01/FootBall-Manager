@@ -1,8 +1,8 @@
 // PlayerContent.tsx
 import { Box } from "@mui/material";
 import PlayerGrid from "./PlayerGrid";
-import { Player } from "../../hooks/usePlayerData";
 import PlayerDetailsDrawer from "./PlayerDetailDrawer";
+import { Player } from "../types";
 
 interface PlayerContentProps {
     players: Player[];

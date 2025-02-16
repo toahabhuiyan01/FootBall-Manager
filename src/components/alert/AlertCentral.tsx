@@ -1,8 +1,8 @@
 import { Grid2 as Grid } from "@mui/material";
-import useAlertStore from "../../store/AlertStore";
 import { Terminal, X } from "lucide-react";
 import { useEffect } from "react";
 import { green, red } from "@mui/material/colors";
+import useAlertStore from "../../store/AlertStore";
 
 function AlertCentral() {
     const { alert, clearAlert } = useAlertStore();

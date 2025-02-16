@@ -4,12 +4,12 @@ import { Box } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme";
 import { usePlayerData } from "./hooks/usePlayerData";
-import { Player } from "./hooks/usePlayerData";
+import FilterControls from "./components/filter/FilterControls";
+import FilterTabs from "./components/filter/FilterTabs";
 import AlertCentral from "./components/alert/AlertCentral";
 import Header from "./components/header/Header";
 import PlayerContent from "./components/player_list/PlayerContent";
-import FilterControls from "./components/filter/FilterControls";
-import FilterTabs from "./components/filter/FilterTabs";
+import { Player } from "./components/types";
 
 function App() {
     const [searchQuery, setSearchQuery] = useState("");
@@ -18,20 +18,17 @@ function App() {
     const {
         players,
         loading,
+        updateQs,
         fetchPlayers,
+        updateFilters,
         updateFiltersDebounced,
-
-        updateOptionalFilters,
-        updateOptionalFiltersDebounced,
         filters,
     } = usePlayerData();
 
     const handleSearchChange = (value: string) => {
         const query = value;
         setSearchQuery(query);
-        updateFiltersDebounced({
-            search: query,
-        });
+        updateQs(query);
     };
 
     const handleTabChange = (newValue: number) => {
@@ -44,7 +41,7 @@ function App() {
             "Goalkeeper",
         ];
         const category = positions[newValue];
-        updateOptionalFilters({
+        updateFiltersDebounced({
             category: category === "All Players" ? undefined : category,
         });
     };
@@ -67,12 +64,12 @@ function App() {
                 />
                 <FilterControls
                     filters={filters}
-                    onFilterChange={updateOptionalFilters}
-                    onFilterChangeDebounced={updateOptionalFiltersDebounced}
+                    onFilterChange={updateFilters}
+                    onFilterChangeDebounced={updateFiltersDebounced}
                 />
                 <FilterTabs
-                    onTabChange={handleTabChange}
                     selectedTab={selectedTab}
+                    onTabChange={handleTabChange}
                 />
                 <PlayerContent
                     players={players}

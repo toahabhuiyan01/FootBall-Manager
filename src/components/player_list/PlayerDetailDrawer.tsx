@@ -8,8 +8,8 @@ import {
     useTheme,
     IconButton,
 } from "@mui/material";
-import { Player } from "../../hooks/usePlayerData";
 import { X } from "lucide-react";
+import { Player } from "../types";
 
 interface PlayerDetailsDrawerProps {
     player: Player | null;

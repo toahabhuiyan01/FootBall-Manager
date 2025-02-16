@@ -8,8 +8,8 @@ import {
     Typography,
     Alert,
 } from "@mui/material";
-import { Player } from "../../hooks/usePlayerData";
 import FormationVisualization from "./FormationVisualization";
+import { Player } from "../types";
 
 interface TeamBuilderProps {
     onPlayerSelect: (position: string) => void;
