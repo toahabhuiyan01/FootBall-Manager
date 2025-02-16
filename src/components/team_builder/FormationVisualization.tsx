@@ -19,6 +19,7 @@ export default function FormationVisualization({
         <Box
             sx={{
                 width: "100%",
+                maxWidth: "100%",
                 height: "600px",
                 position: "relative",
                 backgroundColor: "#2e7d32",
