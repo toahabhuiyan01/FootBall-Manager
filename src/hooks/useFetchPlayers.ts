@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { ApiResponse, Filters, Player } from "../components/types";
 import { create } from "zustand";
 
-const API_KEY = "9fd61d75e0msh107e104bc68b2e8p1f9af6jsnea65ae8ea3a4asdfg";
-const API_HOST = "api-football-v1.p.rapidapi.com";
+// const API_KEY = "9fd61d75e0msh107e104bc68b2e8p1f9af6jsnea65ae8ea3a4asdfg";
+// const API_HOST = "api-football-v1.p.rapidapi.com";
 
 interface PlayerState {
     items: Player[];
@@ -40,35 +40,42 @@ const useFetchPlayers = () => {
     async function fetchPlayerAPI(reset?: boolean) {
         const { items, page, hasMore, loading } = playerState;
 
-        if (loading || !hasMore) {
+        if ((loading || !hasMore) && !reset) {
             return;
         }
 
-        setPlayerState({ loading: true });
+        try {
+            setPlayerState({ loading: true });
 
-        const options = {
-            method: "GET",
-            url: "https://api-football-v1.p.rapidapi.com/v3/players/profiles",
-            headers: {
-                "x-rapidapi-key": API_KEY,
-                "x-rapidapi-host": API_HOST,
-            },
-            params: {
-                search: qs,
-                page: reset ? 1 : page,
-            },
-        };
+            const options = {
+                method: "GET",
+                url: "https://link-share-liard.vercel.app/api/football-api",
+                // headers: {
+                // "x-rapidapi-key": API_KEY,
+                // "x-rapidapi-host": API_HOST,
+                // },
+                params: {
+                    search: qs,
+                    page: reset ? 1 : page,
+                },
+            };
 
-        const response = await axios.request<ApiResponse>(options);
-        const newPlayers = response.data.response.map((item) => item.player);
-        if (newPlayers.length < 250) {
-            setPlayerState({ hasMore: false });
+            const response = await axios.request<ApiResponse>(options);
+            // const newPlayers = response.data.response.map((item) => item.player);
+            const newPlayers = response.data.players;
+            if (newPlayers.length < 250) {
+                setPlayerState({ hasMore: false });
+            }
+
+            setPlayerState({
+                items: reset ? newPlayers : [...items, ...newPlayers],
+                page: reset ? 2 : page + 1,
+            });
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setPlayerState({ loading: false });
         }
-
-        setPlayerState({
-            items: reset ? newPlayers : [...items, ...newPlayers],
-            page: reset ? 2 : page + 1,
-        });
     }
 
     useEffect(() => {
@@ -80,6 +87,7 @@ const useFetchPlayers = () => {
             return;
         }
 
+        console.log("fetching players");
         fetchPlayerAPI(true);
     }, [qs, isMounted]);
 
@@ -110,7 +118,7 @@ const useFetchPlayers = () => {
         }
 
         setFilteredPlayers(filtered);
-    }, [isMounted, filters]);
+    }, [isMounted, filters, playerState.items]);
 
     return {
         filters,

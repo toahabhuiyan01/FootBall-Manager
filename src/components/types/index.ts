@@ -47,4 +47,5 @@ export interface ApiResponse {
     response: Array<{
         player: Player;
     }>;
+    players: Array<Player>;
 }

@@ -1,7 +1,6 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import useDebounceFunction, { delay } from "./useDebounce";
 import useFetchPlayers from "./useFetchPlayers";
-import { Player } from "../components/types";
 
 export interface Filters {
     category?: string;
@@ -24,7 +23,12 @@ export const usePlayerData = () => {
 
     const [mounted, setMounted] = useState(false);
     const [pagination, setPagination] = useState(1);
-    const [filteredPlayers, setFilteredPlayers] = useState<Player[]>([]);
+
+    const filteredPlayers = useMemo(() => {
+        const selected = players.slice(0, pagination * 20);
+
+        return selected;
+    }, [pagination, players]);
 
     const fetchPlayers = async (page?: number) => {
         const mark = page || pagination;
@@ -34,9 +38,6 @@ export const usePlayerData = () => {
             await delay(20);
         }
 
-        const selected = players.slice(0, mark * 20);
-        setFilteredPlayers(selected);
-        console.log(selected, pagination);
         setPagination(mark + 1);
     };
 

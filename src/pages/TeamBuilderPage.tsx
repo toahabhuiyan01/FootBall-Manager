@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import FormationSelection from "../components/team_builder/FormationSelection";
 import FormationVisualization from "../components/team_builder/FormationVisualization";
 import { Player } from "../components/types";
@@ -22,8 +22,19 @@ export default function TeamBuilderPage() {
         setShowVisualization(true);
     };
 
-    const handlePositionClick = (position: string) => {
-        console.log("Position clicked:", position);
+    const handleSelectionChange = (position: string, player: Player) => {
+        setSelectedPlayers((prevPlayers) => ({
+            ...prevPlayers,
+            [position]: player,
+        }));
+    };
+
+    const handleSelectionClear = (position: string) => {
+        setSelectedPlayers((prevPlayers) => {
+            const newPlayers = { ...prevPlayers };
+            delete newPlayers[position];
+            return newPlayers;
+        });
     };
 
     return (
@@ -52,11 +63,17 @@ export default function TeamBuilderPage() {
                     onNext={handleNext}
                 />
             ) : (
-                <FormationVisualization
-                    formation={formation}
-                    selectedPlayers={selectedPlayers}
-                    onPositionClick={handlePositionClick}
-                />
+                <>
+                    <Typography variant="h5">
+                        Select players for each position:
+                    </Typography>
+                    <FormationVisualization
+                        formation={formation}
+                        selectedPlayers={selectedPlayers}
+                        onSelectionChange={handleSelectionChange}
+                        onSelectionClear={handleSelectionClear}
+                    />
+                </>
             )}
         </Box>
     );
