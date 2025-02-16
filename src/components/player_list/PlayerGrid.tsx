@@ -1,8 +1,8 @@
 // PlayerGrid.tsx
 import { useRef, useCallback } from "react";
 import { Grid, Box, CircularProgress } from "@mui/material";
-import { Player } from "../../hooks/usePlayerData";
 import PlayerCard from "./PLayerCard";
+import { Player } from "../types";
 
 interface PlayerGridProps {
     players: Player[];
