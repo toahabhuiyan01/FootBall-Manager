@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { ApiResponse, Filters, Player } from "../components/types";
 import { create } from "zustand";
 
-const API_KEY = "9fd61d75e0msh107e104bc68b2e8p1f9af6jsnea65ae8ea3a4";
+const API_KEY = "9fd61d75e0msh107e104bc68b2e8p1f9af6jsnea65ae8ea3a4asdfg";
 const API_HOST = "api-football-v1.p.rapidapi.com";
 
 interface PlayerState {

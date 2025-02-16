@@ -13,9 +13,14 @@ import SportsSoccerIcon from "@mui/icons-material/SportsSoccer";
 interface HeaderProps {
     searchQuery: string;
     onSearchChange: (value: string) => void;
+    onCreateTeam: () => void;
 }
 
-export default function Header({ searchQuery, onSearchChange }: HeaderProps) {
+export default function Header({
+    searchQuery,
+    onSearchChange,
+    onCreateTeam,
+}: HeaderProps) {
     return (
         <AppBar position="static">
             <Toolbar>
@@ -61,7 +66,12 @@ export default function Header({ searchQuery, onSearchChange }: HeaderProps) {
                         ),
                     }}
                 />
-                <Button variant="contained" color="secondary" sx={{ ml: 2 }}>
+                <Button
+                    sx={{ ml: 2 }}
+                    color="secondary"
+                    variant="contained"
+                    onClick={onCreateTeam}
+                >
                     Create Team
                 </Button>
             </Toolbar>
