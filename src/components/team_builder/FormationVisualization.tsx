@@ -1,5 +1,6 @@
 import { Box, Typography } from "@mui/material";
-import { Player } from "../../hooks/usePlayerData";
+import formations from "../../consts/formations";
+import { Player } from "../types";
 
 interface FormationVisualizationProps {
     formation: string;
@@ -7,35 +8,12 @@ interface FormationVisualizationProps {
     onPositionClick: (position: string) => void;
 }
 
-interface Position {
-    top: string;
-    left: string;
-    label: string;
-}
-
-const FORMATIONS: { [key: string]: { [key: string]: Position } } = {
-    "4-3-3": {
-        GK: { top: "85%", left: "50%", label: "GK" },
-        LB: { top: "70%", left: "20%", label: "LB" },
-        CB1: { top: "70%", left: "40%", label: "CB" },
-        CB2: { top: "70%", left: "60%", label: "CB" },
-        RB: { top: "70%", left: "80%", label: "RB" },
-        CM1: { top: "50%", left: "30%", label: "CM" },
-        CM2: { top: "50%", left: "50%", label: "CM" },
-        CM3: { top: "50%", left: "70%", label: "CM" },
-        LW: { top: "30%", left: "20%", label: "LW" },
-        ST: { top: "20%", left: "50%", label: "ST" },
-        RW: { top: "30%", left: "80%", label: "RW" },
-    },
-    // Add other formations similarly
-};
-
 export default function FormationVisualization({
     formation,
     selectedPlayers,
     onPositionClick,
 }: FormationVisualizationProps) {
-    const formationPositions = FORMATIONS[formation] || FORMATIONS["4-3-3"];
+    const formationPositions = formations[formation] || formations["4-3-3"];
 
     return (
         <Box
