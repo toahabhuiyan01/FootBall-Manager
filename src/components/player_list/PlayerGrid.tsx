@@ -40,7 +40,9 @@ export default function PlayerGrid({
                 flexGrow: 1,
                 p: 3,
                 display: "flex",
+                flexDirection: "column",
                 justifyContent: "center",
+                alignItems: "center",
             }}
         >
             <Grid
@@ -49,7 +51,6 @@ export default function PlayerGrid({
                 sx={{
                     margin: 0,
                     width: "100%",
-                    maxWidth: "72.5rem",
                     justifyContent: "center",
                 }}
             >
@@ -60,6 +61,7 @@ export default function PlayerGrid({
                         xs={12}
                         sm={6}
                         md={4}
+                        lg={3}
                         ref={
                             index === players.length - 1
                                 ? lastPlayerElementRef

@@ -35,7 +35,7 @@ export const usePlayerData = () => {
 
         if (mark * 20 > players.length) {
             await fetchMore();
-            await delay(20);
+            await delay(500);
         }
 
         setPagination(mark + 1);
