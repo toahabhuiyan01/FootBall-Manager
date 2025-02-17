@@ -41,38 +41,48 @@ export default function TeamBuilderPage() {
         <Box
             sx={{
                 width: "100%",
-                maxWidth: "1200px",
-                overflow: "hidden",
                 display: "flex",
                 flexDirection: "column",
+                alignItems: "center",
                 gap: 2,
             }}
         >
-            <Button
-                sx={{ width: "10rem" }}
-                onClick={() => navigate("/")}
-                variant="outlined"
-                startIcon={<ArrowBack />}
+            <Box
+                sx={{
+                    width: "100%",
+                    maxWidth: "1200px",
+                    overflow: "hidden",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 2,
+                }}
             >
-                List Page
-            </Button>
-            {!showVisualization ? (
-                <FormationSelection
-                    formation={formation}
-                    onFormationChange={handleFormationChange}
-                    onNext={handleNext}
-                />
-            ) : (
-                <>
-                    <Typography variant="h5">Build Your Team</Typography>
-                    <FormationVisualization
+                <Button
+                    sx={{ width: "10rem" }}
+                    onClick={() => navigate("/")}
+                    variant="outlined"
+                    startIcon={<ArrowBack />}
+                >
+                    List Page
+                </Button>
+                {!showVisualization ? (
+                    <FormationSelection
                         formation={formation}
-                        selectedPlayers={selectedPlayers}
-                        onSelectionChange={handleSelectionChange}
-                        onSelectionClear={handleSelectionClear}
+                        onFormationChange={handleFormationChange}
+                        onNext={handleNext}
                     />
-                </>
-            )}
+                ) : (
+                    <>
+                        <Typography variant="h5">Build Your Team</Typography>
+                        <FormationVisualization
+                            formation={formation}
+                            selectedPlayers={selectedPlayers}
+                            onSelectionChange={handleSelectionChange}
+                            onSelectionClear={handleSelectionClear}
+                        />
+                    </>
+                )}
+            </Box>
         </Box>
     );
 }

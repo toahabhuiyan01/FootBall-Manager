@@ -2,7 +2,6 @@ import {
     Box,
     Button,
     FormControl,
-    InputLabel,
     MenuItem,
     Select,
     Typography,
@@ -27,10 +26,8 @@ export default function FormationSelection({
                 Select Formation
             </Typography>
             <FormControl fullWidth sx={{ mb: 4 }}>
-                <InputLabel>Formation</InputLabel>
                 <Select
                     value={formation}
-                    label="Formation"
                     onChange={(e) => onFormationChange(e.target.value)}
                 >
                     {ALLOWED_FORMATIONS.map((f) => (
