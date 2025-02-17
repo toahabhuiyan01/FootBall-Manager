@@ -2,13 +2,14 @@ import { Popover, TextField, Box, Autocomplete } from "@mui/material";
 import useFetchPlayers from "../../hooks/useFetchPlayers";
 import useDebounceFunction from "../../hooks/useDebounce";
 import { Player } from "../types";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 type Props = {
     onSelectPlayer: (player: Player) => void;
     anchorEl: HTMLElement | null;
     onClose: () => void;
     playerType: string;
+    selecterPlayers: { [_: number]: boolean };
 };
 
 const PlayerSelection = ({
@@ -16,8 +17,14 @@ const PlayerSelection = ({
     onClose,
     onSelectPlayer,
     playerType,
+    selecterPlayers,
 }: Props) => {
     const { players, loading, onQsChange, setFilters } = useFetchPlayers();
+    const filteredPlayers = useMemo(() => {
+        const filtered = players.filter((p) => !selecterPlayers[p.id]);
+
+        return filtered;
+    }, [players, selecterPlayers]);
 
     useEffect(() => {
         setFilters({
@@ -46,8 +53,12 @@ const PlayerSelection = ({
             <Box sx={{ p: 2, width: 300 }}>
                 <Autocomplete
                     loading={loading}
-                    options={players}
-                    getOptionLabel={(option) => option.name}
+                    options={filteredPlayers}
+                    getOptionLabel={(option) =>
+                        `${option.name} - ${option.nationality ?? "N/A"} - ${
+                            option.age ? `${option.age} years` : "N/A"
+                        }`
+                    }
                     renderInput={(params) => (
                         <TextField
                             {...params}
@@ -61,7 +72,6 @@ const PlayerSelection = ({
                         onClose();
                     }}
                     onInputChange={(_, newValue) => {
-                        console.log(newValue);
                         setQsDeb(newValue);
                     }}
                 />
