@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { ApiResponse, Filters, Player } from "../components/types";
-import { create } from "zustand";
 
 // const API_KEY = "9fd61d75e0msh107e104bc68b2e8p1f9af6jsnea65ae8ea3a4asdfg";
 // const API_HOST = "api-football-v1.p.rapidapi.com";
@@ -13,24 +12,13 @@ interface PlayerState {
     loading: boolean;
 }
 
-interface StoreType {
-    playerState: PlayerState;
-    setPlayerState: (state: Partial<PlayerState>) => void;
-}
-
-const useStore = create<StoreType>((set) => ({
-    playerState: {
-        items: [] as Player[],
+const useFetchPlayers = () => {
+    const [playerState, setPlayerState] = useState<PlayerState>({
+        items: [],
         page: 1,
         hasMore: true,
         loading: false,
-    },
-    setPlayerState: (state) =>
-        set((prev) => ({ playerState: { ...prev.playerState, ...state } })),
-}));
-
-const useFetchPlayers = () => {
-    const { playerState, setPlayerState } = useStore();
+    });
     const [qs, setQS] = useState("");
     const [isMounted, setIsMounted] = useState(false);
     const [filters, setFilters] = useState<Filters>({});
@@ -45,7 +33,7 @@ const useFetchPlayers = () => {
         }
 
         try {
-            setPlayerState({ loading: true });
+            setPlayerState((prev) => ({ ...prev, loading: true }));
 
             const options = {
                 method: "GET",
@@ -64,17 +52,18 @@ const useFetchPlayers = () => {
             // const newPlayers = response.data.response.map((item) => item.player);
             const newPlayers = response.data.players;
             if (newPlayers.length < 250) {
-                setPlayerState({ hasMore: false });
+                setPlayerState((prev) => ({ ...prev, hasMore: false }));
             }
 
-            setPlayerState({
+            setPlayerState((prev) => ({
+                ...prev,
                 items: reset ? newPlayers : [...items, ...newPlayers],
                 page: reset ? 2 : page + 1,
-            });
+            }));
         } catch (err) {
             console.log(err);
         } finally {
-            setPlayerState({ loading: false });
+            setPlayerState((prev) => ({ ...prev, loading: false }));
         }
     }
 
@@ -87,7 +76,6 @@ const useFetchPlayers = () => {
             return;
         }
 
-        console.log("fetching players");
         fetchPlayerAPI(true);
     }, [qs, isMounted]);
 
@@ -119,8 +107,6 @@ const useFetchPlayers = () => {
 
         setFilteredPlayers(filtered);
     }, [isMounted, filters, playerState.items]);
-
-    console.log(filters);
 
     return {
         filters,
