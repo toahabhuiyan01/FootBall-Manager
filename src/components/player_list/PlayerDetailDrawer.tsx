@@ -8,7 +8,7 @@ import {
     useTheme,
     IconButton,
 } from "@mui/material";
-import { X } from "lucide-react";
+import CloseIcon from "@mui/icons-material/Close";
 import { Player } from "../types";
 
 interface PlayerDetailsDrawerProps {
@@ -67,10 +67,9 @@ export default function PlayerDetailsDrawer({
                         {player.name}
                     </Typography>
                     <IconButton onClick={onClose}>
-                        <X />
+                        <CloseIcon />
                     </IconButton>
                 </Box>
-                {/* Player Image Section */}
                 <Box
                     sx={{
                         position: "relative",

@@ -2,8 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { ApiResponse, Filters, Player } from "../components/types";
 
-// const API_KEY = "9fd61d75e0msh107e104bc68b2e8p1f9af6jsnea65ae8ea3a4asdfg";
-// const API_HOST = "api-football-v1.p.rapidapi.com";
+// const API_KEY = process.env.VITE_API_KEY;
+// const API_HOST = process.env.VITE_API_HOST;
 
 interface PlayerState {
     items: Player[];
