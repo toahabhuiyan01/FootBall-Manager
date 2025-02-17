@@ -1,5 +1,6 @@
 import { Grid2 as Grid } from "@mui/material";
-import { Terminal, X } from "lucide-react";
+import KeyboardCommandKeyIcon from "@mui/icons-material/KeyboardCommandKey";
+import CloseIcon from "@mui/icons-material/Close";
 import { useEffect } from "react";
 import { green, red } from "@mui/material/colors";
 import useAlertStore from "../../store/AlertStore";
@@ -43,10 +44,10 @@ function AlertCentral() {
                     alignItems: "center",
                 }}
             >
-                <Terminal />
+                <KeyboardCommandKeyIcon />
                 <p>{alert?.message}</p>
             </Grid>
-            <X style={{ cursor: "pointer" }} onClick={clearAlert} />
+            <CloseIcon style={{ cursor: "pointer" }} onClick={clearAlert} />
         </Grid>
     );
 }
