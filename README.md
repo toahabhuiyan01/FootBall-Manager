@@ -95,3 +95,9 @@ Create custom teams with specific constraints:
 -   Vite
 -   React Router
 -   Zustand (State Management)
+
+## Limitations.
+
+As the football API is a paid service and testing requires a significant number of requests, I had to mimic the API's response. The API returns 250 records per request, which I replicated by implementing query-based data fetching.
+
+To ensure comprehensive data representation, I fed my database with 22,000 player records and retrieved data from my database for display in the application.
