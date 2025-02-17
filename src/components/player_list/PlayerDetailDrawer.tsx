@@ -124,7 +124,7 @@ export default function PlayerDetailsDrawer({
                     <DetailItem
                         emoji="📅"
                         label="Age"
-                        value={`${player.age} years`}
+                        value={player.age ? `${player.age} years` : "N/A"}
                     />
                     <DetailItem emoji="🏢" label="Club" value={player.club} />
                     <DetailItem

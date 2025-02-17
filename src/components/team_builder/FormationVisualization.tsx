@@ -1,4 +1,4 @@
-import { Box, Typography, IconButton, Button } from "@mui/material";
+import { Box, Typography, IconButton, Button, Alert } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import { useState } from "react";
 import formations, { getPlayerType } from "../../consts/formations";
@@ -43,14 +43,7 @@ export default function FormationVisualization({
         onSelectionClear(position);
     };
 
-    console.log(selectedPlayers);
-
     const calculateTeamStats = () => {
-        const totalBudget = Object.values(selectedPlayers).reduce(
-            (sum, player) => sum + (player?.marketValue || 0),
-            0
-        );
-
         const totalAge = Object.values(selectedPlayers).reduce(
             (sum, player) => sum + (player?.age || 0),
             0
@@ -59,17 +52,18 @@ export default function FormationVisualization({
             ? (totalAge / Object.keys(selectedPlayers).length).toFixed(1)
             : 0;
 
-        return { totalBudget, averageAge };
+        return { averageAge };
     };
 
     const validateTeam = () => {
         const newErrors: string[] = [];
-        const { totalBudget, averageAge } = calculateTeamStats();
+        const { averageAge } = calculateTeamStats();
 
-        if (totalBudget < 300 || totalBudget > 700) {
-            newErrors.push(
-                `Team budget must be between 300M and 700M. Current: ${totalBudget}M`
-            );
+        const selectedCount = Object.values(selectedPlayers).filter(
+            (p) => !!p
+        ).length;
+        if (selectedCount < 11) {
+            newErrors.push("You must select 11 players.");
         }
 
         if (Number(averageAge) < 25 || Number(averageAge) > 27) {
@@ -82,7 +76,7 @@ export default function FormationVisualization({
         const clubCount: { [key: string]: number } = {};
 
         Object.values(selectedPlayers).forEach((player) => {
-            if (player) {
+            if (player && player.nationality && player.club) {
                 countryCount[player.nationality] =
                     (countryCount[player.nationality] || 0) + 1;
                 clubCount[player.club] = (clubCount[player.club] || 0) + 1;
@@ -109,7 +103,9 @@ export default function FormationVisualization({
         return newErrors.length === 0;
     };
 
-    console.log(errors);
+    const selectedPlayersId = Object.values(selectedPlayers)
+        .filter((player) => !!player)
+        .reduce((acc, pl) => ({ ...acc, [pl.id]: true }), {});
 
     return (
         <>
@@ -161,6 +157,7 @@ export default function FormationVisualization({
                     onSelectPlayer={(player) =>
                         onSelectionChange(clickedPosition, player)
                     }
+                    selecterPlayers={selectedPlayersId}
                 />
 
                 {Object.entries(formationPositions).map(([key, position]) => {
@@ -173,8 +170,8 @@ export default function FormationVisualization({
                                 top: position.top,
                                 left: position.left,
                                 transform: "translate(-50%, -50%)",
-                                width: "60px",
-                                height: "60px",
+                                width: "65px",
+                                height: "65px",
                                 display: "flex",
                                 flexDirection: "column",
                                 alignItems: "center",
@@ -262,6 +259,7 @@ export default function FormationVisualization({
                                         overflow: "hidden",
                                         textOverflow: "ellipsis",
                                         whiteSpace: "nowrap",
+                                        height: "20px",
                                     }}
                                 >
                                     {player.name}
@@ -272,6 +270,13 @@ export default function FormationVisualization({
                 })}
             </Box>
             <Button onClick={validateTeam}>Validate</Button>
+            <Box sx={{ mt: 2 }}>
+                {errors.map((error, index) => (
+                    <Alert key={index} severity="error" sx={{ mb: 1 }}>
+                        {error}
+                    </Alert>
+                ))}
+            </Box>
         </>
     );
 }
