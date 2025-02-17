@@ -1,9 +1,10 @@
 import { Box, Typography, IconButton, Button } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import { useState } from "react";
-import formations from "../../consts/formations";
+import formations, { getPlayerType } from "../../consts/formations";
 import { Player } from "../types";
 import PlayerSelection from "./PlayerSelection";
+import PlayerDetailsDrawer from "../player_list/PlayerDetailDrawer";
 
 interface FormationVisualizationProps {
     formation: string;
@@ -22,6 +23,7 @@ export default function FormationVisualization({
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     const [clickedPosition, setClickedPosition] = useState<string>("");
     const [errors, setErrors] = useState<string[]>([]);
+    const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
 
     const handlePositionClick = (
         event: React.MouseEvent<HTMLElement>,
@@ -40,6 +42,8 @@ export default function FormationVisualization({
         event.stopPropagation();
         onSelectionClear(position);
     };
+
+    console.log(selectedPlayers);
 
     const calculateTeamStats = () => {
         const totalBudget = Object.values(selectedPlayers).reduce(
@@ -121,6 +125,11 @@ export default function FormationVisualization({
                     border: "2px solid #1b5e20",
                 }}
             >
+                <PlayerDetailsDrawer
+                    player={selectedPlayer}
+                    open={!!selectedPlayer}
+                    onClose={() => setSelectedPlayer(null)}
+                />
                 <Box
                     sx={{
                         position: "absolute",
@@ -143,20 +152,19 @@ export default function FormationVisualization({
                 />
 
                 <PlayerSelection
+                    anchorEl={anchorEl}
+                    onClose={handleClose}
+                    playerType={getPlayerType(clickedPosition)}
                     onSelectPlayer={(player) =>
                         onSelectionChange(clickedPosition, player)
                     }
-                    anchorEl={anchorEl}
-                    onClose={handleClose}
                 />
 
-                {/* Player positions */}
                 {Object.entries(formationPositions).map(([key, position]) => {
                     const player = selectedPlayers[key];
                     return (
                         <Box
                             key={key}
-                            onClick={(e) => handlePositionClick(e, key)}
                             sx={{
                                 position: "absolute",
                                 top: position.top,
@@ -188,6 +196,9 @@ export default function FormationVisualization({
                                     <img
                                         src={player.photo}
                                         alt={player.name}
+                                        onClick={() =>
+                                            setSelectedPlayer(player)
+                                        }
                                         style={{
                                             width: "100%",
                                             height: "100%",
@@ -197,10 +208,19 @@ export default function FormationVisualization({
                                     />
                                 ) : (
                                     <Typography
+                                        onClick={(e) =>
+                                            handlePositionClick(e, key)
+                                        }
                                         variant="body2"
                                         sx={{
                                             color: "#000",
                                             fontWeight: "bold",
+                                            height: "100%",
+                                            width: "100%",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            borderRadius: "50%",
                                         }}
                                     >
                                         {position.label}
@@ -211,10 +231,10 @@ export default function FormationVisualization({
                                         size="small"
                                         sx={{
                                             position: "absolute",
-                                            top: -8,
-                                            right: -8,
+                                            top: -3,
+                                            right: -1,
                                             backgroundColor: "white",
-                                            padding: "2px",
+                                            padding: "1px",
                                             "&:hover": {
                                                 backgroundColor: "#e0e0e0",
                                             },
