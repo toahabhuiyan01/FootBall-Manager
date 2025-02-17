@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import FormationSelection from "../components/team_builder/FormationSelection";
 import FormationVisualization from "../components/team_builder/FormationVisualization";
 import { Player } from "../components/types";
@@ -72,15 +72,12 @@ export default function TeamBuilderPage() {
                         onNext={handleNext}
                     />
                 ) : (
-                    <>
-                        <Typography variant="h5">Build Your Team</Typography>
-                        <FormationVisualization
-                            formation={formation}
-                            selectedPlayers={selectedPlayers}
-                            onSelectionChange={handleSelectionChange}
-                            onSelectionClear={handleSelectionClear}
-                        />
-                    </>
+                    <FormationVisualization
+                        formation={formation}
+                        selectedPlayers={selectedPlayers}
+                        onSelectionChange={handleSelectionChange}
+                        onSelectionClear={handleSelectionClear}
+                    />
                 )}
             </Box>
         </Box>

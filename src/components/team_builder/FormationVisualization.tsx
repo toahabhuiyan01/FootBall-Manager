@@ -113,6 +113,9 @@ export default function FormationVisualization({
 
     return (
         <>
+            <Typography sx={{ textAlign: "center" }} variant="h5">
+                Build Your Team
+            </Typography>
             <Box
                 sx={{
                     width: "100%",
