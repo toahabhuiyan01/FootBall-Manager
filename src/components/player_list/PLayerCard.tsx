@@ -3,7 +3,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import { Player } from "../../hooks/usePlayerData";
+import { Player } from "../types";
 
 interface PlayerCardProps {
     player: Player;
@@ -53,7 +53,10 @@ export default function PlayerCard({ player, onClick }: PlayerCardProps) {
 
                 <DetailItem emoji="🌍" text={player.nationality} />
                 <DetailItem emoji="⚽" text={player.position} />
-                <DetailItem emoji="📅" text={`${player.age} years`} />
+                <DetailItem
+                    emoji="📅"
+                    text={player.age ? `${player.age} years` : "N/A"}
+                />
                 <DetailItem emoji="🏢" text={player.club} />
 
                 <Typography
