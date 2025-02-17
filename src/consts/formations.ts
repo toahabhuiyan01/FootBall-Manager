@@ -4,6 +4,47 @@ interface Position {
     label: string;
 }
 
+export type PlayerType = "Attacker" | "Midfielder" | "Defender" | "Goalkeeper";
+
+export function getPlayerType(positionKey: string): PlayerType {
+    // Attacking positions
+    if (
+        positionKey.includes("ST") ||
+        positionKey.includes("LW") ||
+        positionKey.includes("RW")
+    ) {
+        return "Attacker";
+    }
+
+    // Midfield positions
+    if (
+        positionKey.includes("CM") ||
+        positionKey.includes("LM") ||
+        positionKey.includes("RM")
+    ) {
+        return "Midfielder";
+    }
+
+    // Defensive positions including wing-backs
+    if (
+        positionKey.includes("CB") ||
+        positionKey.includes("LB") ||
+        positionKey.includes("RB") ||
+        positionKey.includes("LWB") ||
+        positionKey.includes("RWB")
+    ) {
+        return "Defender";
+    }
+
+    // Goalkeeper position
+    if (positionKey.includes("GK")) {
+        return "Goalkeeper";
+    }
+
+    // Default case (should never happen with current formations)
+    return "Midfielder";
+}
+
 const formations: { [key: string]: { [key: string]: Position } } = {
     "4-3-3": {
         GK: { top: "85%", left: "50%", label: "GK" },

@@ -64,9 +64,7 @@ export default function TeamBuilderPage() {
                 />
             ) : (
                 <>
-                    <Typography variant="h5">
-                        Select players for each position:
-                    </Typography>
+                    <Typography variant="h5">Build Your Team</Typography>
                     <FormationVisualization
                         formation={formation}
                         selectedPlayers={selectedPlayers}

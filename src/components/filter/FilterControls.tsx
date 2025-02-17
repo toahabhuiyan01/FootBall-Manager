@@ -1,7 +1,7 @@
 import { Box, Grid, Typography } from "@mui/material";
 import CountryClubFilter from "./CountryClubFilter";
 import RangeFilter from "./RangeFilter";
-import { Country, Filters, Team } from "./types";
+import { Country, Filters } from "./types";
 import { useFilterData } from "../../hooks/useFilterData";
 
 interface FilterControlsProps {
@@ -16,11 +16,11 @@ export default function FilterControls({
 }: FilterControlsProps) {
     const {
         countries,
-        clubs,
+        // clubs,
         loadingCountries,
-        loadingClubs,
+        // loadingClubs,
         setCountryInput,
-        setClubInput,
+        // setClubInput,
         setClubs,
     } = useFilterData(filters.country || "");
 
@@ -40,17 +40,17 @@ export default function FilterControls({
         },
     };
 
-    const clubConfig = {
-        label: "Club",
-        options: clubs,
-        loading: loadingClubs,
-        getOptionLabel: (option: Team) => option.team.name,
-        value: clubs.find((c) => c.team.name === filters.club) || null,
-        onInputChange: setClubInput,
-        onChange: (newValue: Team | null) => {
-            handleFilterChange({ club: newValue?.team.name || "" });
-        },
-    };
+    // const clubConfig = {
+    //     label: "Club",
+    //     options: clubs,
+    //     loading: loadingClubs,
+    //     getOptionLabel: (option: Team) => option.team.name,
+    //     value: clubs.find((c) => c.team.name === filters.club) || null,
+    //     onInputChange: setClubInput,
+    //     onChange: (newValue: Team | null) => {
+    //         handleFilterChange({ club: newValue?.team.name || "" });
+    //     },
+    // };
 
     return (
         <Box
@@ -66,13 +66,13 @@ export default function FilterControls({
                 Player Filters
             </Typography>
             <Grid container spacing={3}>
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid item xs={12} sm={6} md={6}>
                     <CountryClubFilter config={countryConfig} />
                 </Grid>
-                <Grid item xs={12} sm={6} md={3}>
+                {/* <Grid item xs={12} sm={6} md={3}>
                     <CountryClubFilter config={clubConfig} />
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
+                </Grid> */}
+                {/* <Grid item xs={12} sm={6} md={3}>
                     <RangeFilter
                         label="Market Value (M€)"
                         value={[
@@ -90,8 +90,8 @@ export default function FilterControls({
                             })
                         }
                     />
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
+                </Grid> */}
+                <Grid item xs={12} sm={6} md={6}>
                     <RangeFilter
                         label="Age"
                         value={[filters.age?.min || 16, filters.age?.max || 40]}

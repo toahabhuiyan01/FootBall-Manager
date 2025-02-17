@@ -2,15 +2,28 @@ import { Popover, TextField, Box, Autocomplete } from "@mui/material";
 import useFetchPlayers from "../../hooks/useFetchPlayers";
 import useDebounceFunction from "../../hooks/useDebounce";
 import { Player } from "../types";
+import { useEffect } from "react";
 
 type Props = {
     onSelectPlayer: (player: Player) => void;
     anchorEl: HTMLElement | null;
     onClose: () => void;
+    playerType: string;
 };
 
-const PlayerSelection = ({ anchorEl, onClose, onSelectPlayer }: Props) => {
-    const { players, loading, onQsChange } = useFetchPlayers();
+const PlayerSelection = ({
+    anchorEl,
+    onClose,
+    onSelectPlayer,
+    playerType,
+}: Props) => {
+    const { players, loading, onQsChange, setFilters } = useFetchPlayers();
+
+    useEffect(() => {
+        setFilters({
+            category: playerType,
+        });
+    }, [playerType]);
 
     const open = Boolean(anchorEl);
 

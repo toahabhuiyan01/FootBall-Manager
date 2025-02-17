@@ -120,6 +120,8 @@ const useFetchPlayers = () => {
         setFilteredPlayers(filtered);
     }, [isMounted, filters, playerState.items]);
 
+    console.log(filters);
+
     return {
         filters,
         setFilters,
